@@ -1,0 +1,44 @@
+﻿
+
+NuGet Packages Installed: 
+
+	System.Data.SQLite
+	Microsoft.Net.Http - THIS MAY ALREADY BE IN .NET Standard
+
+
+API Information:
+	OMDB API request key: 3ab1833e
+	OMDb API example: http://www.omdbapi.com/?i=tt3896198&apikey=3ab1833e
+
+
+
+
+Original Loop to check Foldernames and pull from API
+        public static object Builder()
+        {
+            //Find movie folder path
+            string movieDir = BuildDB.MovieDirPath();
+            //TODO: Check if building for 1st time - Is MovieMetaDB file at stated directory?
+
+            List<string> folderNames = GetFolders.GetFolderNames(movieDir);
+
+	            //cycle through folderNames by hitting API then checking of good reponse
+            foreach (string name in folderNames)
+            {
+                string newname = name;
+                Console.WriteLine("Looking up movie: {0}", name);
+                ResponseStrings OMDBResponse = OMDBGetResponse(name);
+                while (OMDBResponse.Response == "False")
+                {
+                    //OMDBResponse.newname = name;
+                    OMDBResponse = EditTitleLoop.TitleNotFound(name);
+                };
+
+                string mTitle = OMDBResponse.Title;
+                string mYear = OMDBResponse.Year;
+                string mActors = OMDBResponse.Actors;
+                EditTitleLoop.CorrectMovie(mTitle, mYear, mActors, name, OMDBResponse);
+
+            }
+			return null;
+		}
