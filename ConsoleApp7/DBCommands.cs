@@ -25,9 +25,6 @@ namespace MovieMetaData
         public static SQLiteConnection CreateConnection()
         {   // Create a new database connection:
             SQLiteConnection mDBconn = new SQLiteConnection("Data Source = MovieMetaDB.sqlite; Version = 3; New = True; Compress = True; ");
-            // Open the connection:       
-            //try { mDBconn.Open(); }
-            //catch (Exception ex) { }
             return mDBconn;
         }
 
@@ -45,8 +42,7 @@ namespace MovieMetaData
         }
 
         public static void InsertOBDMData(SQLiteConnection mDBconn, ResponseStrings OMDBResponse)
-        {
-            //mDBconn.Close();  // Don't know why I need this .Close()
+        {   
             SQLiteCommand mDBcmd = mDBconn.CreateCommand();
             string cmdText = @"INSERT INTO MovieTable  (";
             string keyText = "";
@@ -95,15 +91,6 @@ namespace MovieMetaData
             
         }
 
-
-
-        //public static void InsertData(SQLiteConnection conn)
-        //{
-        //    SQLiteCommand sqlite_cmd;
-        //    sqlite_cmd = conn.CreateCommand();
-        //    sqlite_cmd.CommandText = "INSERT INTO SampleTable (Col1, Col2) VALUES('Test Text ', 1); ";
-        //    sqlite_cmd.ExecuteNonQuery();
-        //}
 
 
 
@@ -181,49 +168,6 @@ namespace MovieMetaData
             }
             conn.Close();
         }
-
-        public static List<string> WordWrap(string input, int maxCharacters)
-        {
-            List<string> lines = new List<string>();
-
-            if (!input.Contains(" ") && !input.Contains("\n"))
-            {
-                int start = 0;
-                while (start < input.Length)
-                {
-                    lines.Add(input.Substring(start, Math.Min(maxCharacters, input.Length - start)));
-                    start += maxCharacters;
-                }
-            }
-            else
-            {
-                string[] paragraphs = input.Split('\n');
-
-                foreach (string paragraph in paragraphs)
-                {
-                    string[] words = paragraph.Split(' ');
-
-                    string line = "";
-                    foreach (string word in words)
-                    {
-                        if ((line + word).Length > maxCharacters)
-                        {
-                            lines.Add(line.Trim());
-                            line = "";
-                        }
-
-                        line += string.Format("{0} ", word);
-                    }
-
-                    if (line.Length > 0)
-                    {
-                        lines.Add(line.Trim());
-                    }
-                }
-            }
-            return lines;
-        }
-
     }
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
