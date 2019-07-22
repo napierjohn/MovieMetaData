@@ -47,6 +47,7 @@ namespace MovieMetaData
                     DBCommands.SearchMovieTable();
                     break;
                 case "E":
+                    DBCommands.AddComment();
 
                     break;
                 case "X":
