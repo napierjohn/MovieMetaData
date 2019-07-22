@@ -7,10 +7,9 @@ using Newtonsoft.Json;
 
 namespace MovieMetaData
 {
+    //API request called from BuildDB.  'name' = variable from 'fore each' loop of FolderList
     class OMDBWebRequest
     {
-        //public static string correctMovie = "N";
-        //Called from BuildDB.  'name' = variable from 'fore each' loop of FolderList
         public static ResponseStrings GetOMDBWebRequest(string name)
         {
             var webClient = new WebClient();

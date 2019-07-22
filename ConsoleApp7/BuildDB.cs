@@ -22,9 +22,6 @@ namespace MovieMetaData
             SQLiteConnection mDBconn = DBCommands.CreateConnection();
             object mDBcmd = DBCommands.CreateNewMovieTable(mDBconn);
 
-
-
-
             return movieDir;
         }
     

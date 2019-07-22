@@ -8,26 +8,16 @@ using System.Reflection;
 using System.Data;
 
 namespace MovieMetaData
-{
+{   // Methods to manage database
     public class DBCommands
     {
-
-        //Commands List:
-        // SQLiteConnection sqlite_conn;
-        //sqlite_conn = CreateConnection();
-        //CreateTable(sqlite_conn);
-        //InsertData(sqlite_conn);
-        //ReadData(sqlite_conn);
-
-
-
-
         public static SQLiteConnection CreateConnection()
         {   // Create a new database connection:
             SQLiteConnection mDBconn = new SQLiteConnection("Data Source = MovieMetaDB.sqlite; Version = 3; New = True; Compress = True; ");
             return mDBconn;
         }
 
+        // Creates table to match OMDB response
         public static object CreateNewMovieTable(SQLiteConnection mDBconn)
         {
             mDBconn.Open();
@@ -41,6 +31,8 @@ namespace MovieMetaData
             return mDBcmd;
         }
 
+        // Insert Proprties of object holing OMDB API resonse 
+        // This dyanmially builds the SQL and uses parameterization of object to avoid SQL Injection
         public static void InsertOBDMData(SQLiteConnection mDBconn, ResponseStrings OMDBResponse)
         {   
             SQLiteCommand mDBcmd = mDBconn.CreateCommand();
@@ -91,9 +83,7 @@ namespace MovieMetaData
             
         }
 
-
-
-
+        //Shows a formatted table of movie titles w/ their IMDB http address to check
         public static void ViewMovieList()
         {
             Console.WriteLine("\n");
@@ -118,13 +108,14 @@ namespace MovieMetaData
                 mDBconn.Close();
             }
         }
-
-        public static void SearchMovieTable() // Search MovieTable by Title
+        // Search MovieTable by Title
+        // This dyanmially builds the SQL and uses parameterization of object to avoid SQL Injection
+        public static void SearchMovieTable() 
         {
             Console.WriteLine("\n\tWhich movie from Database?  (enter \"L\" to see List)\n\t");
             string searchTitle = Console.ReadLine().Trim();
             char firstLetter = searchTitle.ToUpper()[0];
-            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // To show Movie List
+            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // Option to show Movie List
 
             using (SQLiteConnection mDBconn = CreateConnection()) 
             {
@@ -150,14 +141,15 @@ namespace MovieMetaData
             
         }
 
-
-        public static void UpdateUserComment()  //Paramaterized UPDATE UserComment column
+        //Paramaterized UPDATE UserComment column
+        // This dyanmially builds the SQL and uses parameterization of object to avoid SQL Injection
+        public static void UpdateUserComment()  
         {
             Console.WriteLine("\n\tWhich movie from Database?  (enter \"L\" to see List)\n\t");
             string searchTitle = Console.ReadLine().Trim();
 
             char firstLetter = searchTitle.ToUpper()[0];
-            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // To show Movie List
+            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // option to show Movie List
 
             Console.WriteLine("\n\tType your comments without hitting <Enter> till you are done.\n\t");
             string userComm = Console.ReadLine().Trim();
