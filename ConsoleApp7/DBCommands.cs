@@ -71,7 +71,7 @@ namespace MovieMetaData
                 else
                 {
                     keyText += itemKey + ")";
-                    valText += "@" + itemKey + ")";  //"=" + itemKey + 
+                    valText += "@" + itemKey + ", )";  //"=" + itemKey + 
                     mDBcmd.Parameters.Add("@" + itemKey, DbType.AnsiString).Value = itemVal;
                     Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal); 
                 }
@@ -137,12 +137,13 @@ namespace MovieMetaData
             Console.WriteLine("\n");
             Console.WriteLine("Which movie from Database?  (enter \"L\" to see List)");
             string searchTitle = Console.ReadLine().Trim();
-            using (SQLiteConnection mDBconn = CreateConnection())
+            char firstLetter = searchTitle.ToUpper()[0];
+            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }
+
+            using (SQLiteConnection mDBconn = CreateConnection()) 
             {
                 mDBconn.Open();
-
                 string sql = "SELECT * from MovieTable Where Title = @Title";
-
                 using (SQLiteCommand mDBcmd = new SQLiteCommand(sql, mDBconn))
                 {
                     mDBcmd.Parameters.Add("@Title", DbType.AnsiString).Value = searchTitle;
@@ -150,14 +151,19 @@ namespace MovieMetaData
                     {
                         while (reader.Read())
                         {
-                            Console.WriteLine("\t{0}. {1} \t Verify at: https://www.imdb.com/title/{2}", reader["Id"], reader["Title"], reader["imdbID"]);
-                            
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                    Console.WriteLine("{0,-10} = {1,-10}", reader.GetName(i), reader.GetValue(i));
+                            }
+                            //Console.WriteLine("{0,-10} {1,-10} {2,5}",  reader.["Title"], reader["imdbID"], reader["Year"]);
+
                         }
                     }
                 }
-
                 mDBconn.Close();
             }
+            
         }
 
 
@@ -175,6 +181,49 @@ namespace MovieMetaData
             }
             conn.Close();
         }
+
+        public static List<string> WordWrap(string input, int maxCharacters)
+        {
+            List<string> lines = new List<string>();
+
+            if (!input.Contains(" ") && !input.Contains("\n"))
+            {
+                int start = 0;
+                while (start < input.Length)
+                {
+                    lines.Add(input.Substring(start, Math.Min(maxCharacters, input.Length - start)));
+                    start += maxCharacters;
+                }
+            }
+            else
+            {
+                string[] paragraphs = input.Split('\n');
+
+                foreach (string paragraph in paragraphs)
+                {
+                    string[] words = paragraph.Split(' ');
+
+                    string line = "";
+                    foreach (string word in words)
+                    {
+                        if ((line + word).Length > maxCharacters)
+                        {
+                            lines.Add(line.Trim());
+                            line = "";
+                        }
+
+                        line += string.Format("{0} ", word);
+                    }
+
+                    if (line.Length > 0)
+                    {
+                        lines.Add(line.Trim());
+                    }
+                }
+            }
+            return lines;
+        }
+
     }
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
