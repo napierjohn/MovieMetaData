@@ -10,8 +10,7 @@ API Information:
 	OMDB API request key: 3ab1833e
 	OMDb API example: http://www.omdbapi.com/?i=tt3896198&apikey=3ab1833e
 
-
-
+CREATE TABLE IF NOT EXISTS MovieTable  (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, Title TEXT, Year TEXT, Rated TEXT, Released TEXT, Runtime TEXT, Genre TEXT, Director TEXT, Writer TEXT, Actors TEXT, Plot TEXT, Language TEXT, Country TEXT, Awards TEXT, Poster TEXT, Ratings TEXT, Metascore TEXT, imdbRating TEXT, imdbVotes TEXT, imdbID TEXT, Type TEXT, DVD TEXT, BoxOffice TEXT, Production TEXT, Website TEXT, Response TEXT, newname TEXT );
 
 Original Loop to check Foldernames and pull from API
         public static object Builder()
@@ -42,3 +41,5 @@ Original Loop to check Foldernames and pull from API
             }
 			return null;
 		}
+
+		"INSERT INTO MovieTable  (Title, Year, Rated, Released, Runtime, Genre, Director, Writer, Actors, Plot, Language, Country, Awards, Poster, Ratings, Metascore, imdbRating, imdbVotes, imdbID, Type, DVD, BoxOffice, Production, Website, Response, newname,  VALUES (@13 Assassins, @2010, @R, @25 Sep 2010, @141 min, @Action, Adventure, Drama, @Takashi Miike, @Kaneo Ikegami (based on a screenplay by), Shoichirou Ikemiya (story), Daisuke Tengan (screenplay), @Kôji Yakusho, Takayuki Yamada, Yûsuke Iseya, Ikki Sawamura, @In 1844, the peace of Feudal Japan is threatened by cruel Lord Naritsugu Matsudaira, who is politically rising and getting closer to his half-brother, the shogun. After the harakiri of the Namiya clan leader, samurai Shinzaemon Shimada is summoned by the shogun's advisor Sir Doi of the Akashi Clan to listen to the tragedy of Makino Uneme, whose son and daughter-in-law have been murdered by Naritsugu. Then Sir Doi shows a woman with arms, legs and tongue severed by Naritsugu and she writes with her forearm a request to Shinza to slaughter Naritsugu and his samurai. Shinza promises to kill Naritsugu and he gathers eleven other samurais and plots a plan to attack Naritsugu in his trip back to the Akashi land. But the cunning samurai Hanbei Kitou that is responsible for the security of his master foresees Shinza's intent. Shinza decides to go with his samurai through the mountain, where they find the hunter Koyata that guides them off the mountain and joins the group. Now the thirteen men prepare an ambush to Naritsugu and his army of two hundred samurai in a suicide mission to stop evil., @Japanese, @Japan, UK, @14 wins & 27 nominations., @https://m.media-amazon.com/images/M/MV5BYWE3NzAyNDEtNTU5ZC00MzFlLTkyYzAtZmY4ODk0ZmY0NDU4XkEyXkFqcGdeQXVyNzI1NzMxNzM@._V1_SX300.jpg, @System.Collections.Generic.List`1[MovieMetaData.Rating], @84, @7.6, @58,223, @tt1436045, @movie, @05 Jul 2011, @$802,524, @Magnet Releasing, @http://www.13assassins.com/, @True, @, "
