@@ -51,12 +51,12 @@ namespace MovieMetaData
 
             var OMDBDict = BuildDB.ObjectToDictionary(OMDBResponse);
             mDBcmd.CommandType = CommandType.Text;
-            for (int index = 0; index < OMDBDict.Count-1; index++)
+            for (int index = 0; index < OMDBDict.Count; index++)
             {
                 var item = OMDBDict.ElementAt(index);
                 var itemKey = item.Key;
                 string itemVal = item.Value.ToString();
-                if (index < OMDBDict.Count-2)
+                if (index < OMDBDict.Count)
                 {
                     keyText += itemKey + ", ";
                     valText += "@" + itemKey +  ", "; //"=" + itemKey +
@@ -66,8 +66,8 @@ namespace MovieMetaData
                 }
                 else
                 {
-                    keyText += itemKey + ")";
-                    valText += "@" + itemKey + ", )";  //"=" + itemKey + 
+                    keyText += itemKey + " )";
+                    valText += "@" + itemKey + " )";  //"=" + itemKey + 
                     mDBcmd.Parameters.Add("@" + itemKey, DbType.AnsiString).Value = itemVal;
                     Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal); 
                 }
@@ -101,15 +101,15 @@ namespace MovieMetaData
             {
                 mDBconn.Open();
 
-                string stm = "SELECT Id, Title, imdbID from MovieTable";
+                string sql = "SELECT Id, Title, imdbID from MovieTable";
 
-                using (SQLiteCommand cmd = new SQLiteCommand(stm, mDBconn))
+                using (SQLiteCommand mDBcmd = new SQLiteCommand(sql, mDBconn))
                 {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    using (SQLiteDataReader reader = mDBcmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            Console.WriteLine("\t{0}. {1} \t Verify at: https://www.imdb.com/title/{2}", reader["Id"], reader["Title"], reader["imdbID"]);
+                            Console.WriteLine(string.Format("{0,2}.{1,-25}{2}{3}", reader["Id"], reader["Title"], "Verify at: https://www.imdb.com/title/",reader["imdbID"]));
 
                         }
                     }
@@ -119,13 +119,12 @@ namespace MovieMetaData
             }
         }
 
-        public static void SearchMovieTable()
+        public static void SearchMovieTable() // Search MovieTable by Title
         {
-            Console.WriteLine("\n");
-            Console.WriteLine("Which movie from Database?  (enter \"L\" to see List)");
+            Console.WriteLine("\n\tWhich movie from Database?  (enter \"L\" to see List)\n\t");
             string searchTitle = Console.ReadLine().Trim();
             char firstLetter = searchTitle.ToUpper()[0];
-            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }
+            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // To show Movie List
 
             using (SQLiteConnection mDBconn = CreateConnection()) 
             {
@@ -141,10 +140,8 @@ namespace MovieMetaData
 
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                    Console.WriteLine("{0,-10} = {1,-10}", reader.GetName(i), reader.GetValue(i));
+                                Console.WriteLine("{0,-10} = {1,-10}", reader.GetName(i), reader.GetValue(i));
                             }
-                            //Console.WriteLine("{0,-10} {1,-10} {2,5}",  reader.["Title"], reader["imdbID"], reader["Year"]);
-
                         }
                     }
                 }
@@ -154,20 +151,32 @@ namespace MovieMetaData
         }
 
 
-        public static void ReadData(SQLiteConnection conn)
+        public static void UpdateUserComment()  //Paramaterized UPDATE UserComment column
         {
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM SampleTable";
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
+            Console.WriteLine("\n\tWhich movie from Database?  (enter \"L\" to see List)\n\t");
+            string searchTitle = Console.ReadLine().Trim();
+
+            char firstLetter = searchTitle.ToUpper()[0];
+            if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // To show Movie List
+
+            Console.WriteLine("\n\tType your comments without hitting <Enter> till you are done.\n\t");
+            string userComm = Console.ReadLine().Trim();
+
+            using (SQLiteConnection mDBconn = CreateConnection())
             {
-                string myreader = sqlite_datareader.GetString(0);
-                Console.WriteLine(myreader);
+                mDBconn.Open();
+                string sql = "UPDATE MovieTable SET UserComment = @UserComment WHERE Title = @Title";
+                using (SQLiteCommand mDBcmd = new SQLiteCommand(sql, mDBconn))
+                {
+                    mDBcmd.Parameters.Add("@Title", DbType.AnsiString).Value = searchTitle;
+                    mDBcmd.Parameters.Add("@UserComment", DbType.AnsiString).Value = userComm;
+                    mDBcmd.ExecuteNonQuery();
+                }
+                Console.WriteLine("\n\tUser Comment for {0} updated to read: {1}\n\t", searchTitle, userComm);
+                mDBconn.Close();
             }
-            conn.Close();
         }
+
     }
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

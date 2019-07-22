@@ -34,7 +34,11 @@ namespace MovieMetaData
             switch (menuChoice)
             {
                 case "A":
-                    BuildDB.Builder();
+                    Console.WriteLine("\nThis option will create a new empty MovieMetaData database erasing any existing database.\n" +
+                        "Continue new MovieMetaData database creation?  Y or N \n");
+                    string YorN = Console.ReadKey().Key.ToString().ToUpper();
+                    if (YorN == "N") { AppMainMenu(); }
+                    else { BuildDB.Builder(); }
                     break;
                 case "B":
                     string movieDir = BuildDB.MovieDirPath();
@@ -47,7 +51,7 @@ namespace MovieMetaData
                     DBCommands.SearchMovieTable();
                     break;
                 case "E":
-                    DBCommands.AddComment();
+                    DBCommands.UpdateUserComment();
 
                     break;
                 case "X":

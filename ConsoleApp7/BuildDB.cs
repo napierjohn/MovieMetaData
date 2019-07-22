@@ -28,8 +28,8 @@ namespace MovieMetaData
             return movieDir;
         }
     
-        //Ask to add Movies to table
-        public static void addMetaData()
+        
+        public static void addMetaData()  // Add the movie to the database?
         {
             bool confirmed = false;
             while (!confirmed)
@@ -41,7 +41,7 @@ namespace MovieMetaData
             }
         }
 
-
+        // One by one, use folder names to derive movie name then prompt user if correct movie 
         public static object CycleThuFolders(string movieDir)
         {
             List<string> folderNames = GetFolders.GetFolderNames(movieDir);
@@ -58,12 +58,11 @@ namespace MovieMetaData
                     OMDBResponse = EditTitleLoop.TitleNotFound(name);
                 };
 
-                string mTitle = OMDBResponse.Title;
-                string mYear = OMDBResponse.Year;
-                string mActors = OMDBResponse.Actors;
-                EditTitleLoop.CorrectMovie(mTitle, mYear, mActors, name, OMDBResponse);
-                AddMovie2Database(OMDBResponse, movieDir);
-                
+            string mTitle = OMDBResponse.Title;
+            string mYear = OMDBResponse.Year;
+            string mActors = OMDBResponse.Actors;
+            EditTitleLoop.CorrectMovie(mTitle, mYear, mActors, name, OMDBResponse);
+            AddMovie2Database(OMDBResponse, movieDir);   
             }
             return null;
         }
@@ -80,8 +79,7 @@ namespace MovieMetaData
             }
         }
 
-
-        //TEST MEthod
+        //TEST Method to make List from API object properties
         static List<String>  GetOMDBPropertyName(ResponseStrings  OMDBReponse)
         {
             List<string> OMDResponseNames = new List<string>();
@@ -97,6 +95,7 @@ namespace MovieMetaData
             return OMDResponseNames;
         }
 
+        //TEST Method to make list from API object values
         static List<String> GetOMDBPropertyValue(Object OMDBReponse)
         {
             List<string> mDBdata = new List<string>();
@@ -110,15 +109,14 @@ namespace MovieMetaData
             return mDBdata;
         }
 
-
-
-
+        // Hit the OMDB API with the movie title
         public static ResponseStrings OMDBGetResponse(string name)
         {
             return OMDBWebRequest.GetOMDBWebRequest(name);
         }
 
-        public static Dictionary<string, object> ObjectToDictionary(object obj)
+        //Create dictionary from object properties returned from API - will be used to 100% correctly populate MovieTable
+        public static Dictionary<string, object> ObjectToDictionary(object obj)  
         {
             Dictionary<string, object> OMDBdict = new Dictionary<string, object>();
 
@@ -139,6 +137,7 @@ namespace MovieMetaData
             return OMDBdict;
         }
 
+        //Prompt user about .exe and location of movie folder to cycle though
         public static string MovieDirPath()
         {
             string userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
