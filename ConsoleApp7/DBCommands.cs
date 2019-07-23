@@ -32,29 +32,29 @@ namespace MovieMetaData
         }
 
         // Insert Proprties of object holing OMDB API resonse 
-        // This dyanmially builds the SQL and uses parameterization of object to avoid SQL Injection
+        // This dyanmially builds the SQL and uses Reflection and parameterization of object to avoid SQL Injection
         public static void InsertOBDMData(SQLiteConnection mDBconn, ResponseStrings OMDBResponse)
         {   
             SQLiteCommand mDBcmd = mDBconn.CreateCommand();
             string cmdText = @"INSERT INTO MovieTable  (";
             string keyText = "";
             string valText = "";
-            string InsertedValues = "";
-
+            //create dictionary
             var OMDBDict = BuildDB.ObjectToDictionary(OMDBResponse);
+            //set up for creating sql command text
             mDBcmd.CommandType = CommandType.Text;
-            for (int index = 0; index < OMDBDict.Count; index++)
-            {
+            for (int index = 0; index < OMDBDict.Count-2; index++)
+            {   
                 var item = OMDBDict.ElementAt(index);
                 var itemKey = item.Key;
                 string itemVal = item.Value.ToString();
-                if (index < OMDBDict.Count)
+
+                if (index < OMDBDict.Count-3)
                 {
                     keyText += itemKey + ", ";
                     valText += "@" + itemKey +  ", "; //"=" + itemKey +
                     mDBcmd.Parameters.Add("@" + itemKey, DbType.AnsiString).Value = itemVal;
-                    InsertedValues += itemVal + ", ";
-                    Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal);
+                     Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal);
                 }
                 else
                 {
@@ -125,10 +125,9 @@ namespace MovieMetaData
                 {
                     mDBcmd.Parameters.Add("@Title", DbType.AnsiString).Value = searchTitle;
                     using (SQLiteDataReader reader = mDBcmd.ExecuteReader())
-                    {
+                    {   //print movie list table
                         while (reader.Read())
                         {
-
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 Console.WriteLine("{0,-10} = {1,-10}", reader.GetName(i), reader.GetValue(i));

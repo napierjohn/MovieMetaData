@@ -8,8 +8,7 @@ namespace MovieMetaData
 {
     class EditTitleLoop
     {
-
-
+        //if title not found in API, direct user to edit title
         public static ResponseStrings TitleNotFound(string name)
         {
             Console.Write("\'{0}\' was not found.", name);
@@ -17,6 +16,7 @@ namespace MovieMetaData
             return OMDBResponse2;
         }
 
+        //if user needs to correct the movie title
         public static ResponseStrings EditTitle()
         {
             Console.WriteLine("\nPlease enter the correct movie title:  ");
@@ -26,7 +26,7 @@ namespace MovieMetaData
 
             return OMDBResponse2;
         }
-
+        //for web request to API if original title is incorrect
         public static ResponseStrings OMDBGetResponse2(string newname)
         {
             string name = newname;
@@ -34,6 +34,7 @@ namespace MovieMetaData
             return OMDBResponse2;
         }
 
+        //Show sample of returned API data for user verification
         public static ResponseStrings CorrectMovie(string mTitle, string mYear, string mActors, string name, ResponseStrings OMDBResponse)
         {
             Console.WriteLine("\nDoes this look like the correct movie?  Y or N ");

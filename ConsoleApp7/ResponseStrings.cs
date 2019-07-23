@@ -6,7 +6,7 @@ namespace MovieMetaData
 {
 
     public class ResponseStrings
-    {
+    {   //Object Properties to populate with OMDBResponse JSON
         public string Title { get; set; }
         public string Year { get; set; }
         public string Rated { get; set; }
@@ -32,10 +32,11 @@ namespace MovieMetaData
         public string Production { get; set; }
         public string Website { get; set; }
         public string Response { get; set; }
-        public string newname { get; set; }
+        public string Newname { get; set; }
+
     }
 
-    public class Rating
+        public class Rating
     {
         public string Source { get; set; }
         public string Value { get; set; }

@@ -14,9 +14,6 @@ namespace MovieMetaData
             //Find movie folder path
             string movieDir = BuildDB.MovieDirPath();
 
-            //TODO: Check if building for 1st time - Is MovieMetaDB file at stated directory?
-            //string FirstBuildCheck = Console.WriteLine("\n You are about to make a new copy of the MovieTable.  Continue?  ");
-
             //Create MovieTable
             Console.WriteLine("\n Creating MovieMetaDataBase . . . .");
             SQLiteConnection mDBconn = DBCommands.CreateConnection();

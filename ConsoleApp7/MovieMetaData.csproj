@@ -98,6 +98,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="InfoFile.txt" />
@@ -113,6 +114,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MockFolderSet\2001 A Space Odyssey %281968%29 1080p\" />
+    <Folder Include="MockFolderSet\A Clockwork Orange %281971%29\" />
+    <Folder Include="MockFolderSet\Akira - 25th Anniversary Edition %281988%29 1080p\" />
+    <Folder Include="MockFolderSet\Altered States %281980%29\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" />
