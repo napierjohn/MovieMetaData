@@ -15,10 +15,10 @@ namespace MovieMetaData
             string movieDir = BuildDB.MovieDirPath();
 
             //Create MovieTable
-            Console.WriteLine("\n Creating MovieMetaDataBase . . . .");
+            Console.WriteLine("\n  Creating MovieMetaDataBase . . . .");
             SQLiteConnection mDBconn = DBCommands.CreateConnection();
             object mDBcmd = DBCommands.CreateNewMovieTable(mDBconn);
-
+            Console.WriteLine("\n\n  Database created.  You should now populate it.");
             return movieDir;
         }
     
@@ -28,10 +28,11 @@ namespace MovieMetaData
             bool confirmed = false;
             while (!confirmed)
             {
-                Console.WriteLine("\n Add Movie metadata to MovieTable? Y or N ");
+                Console.WriteLine("\n  Add Movie metadata to MovieTable? Y or N ");
                 string YorN = Console.ReadKey().Key.ToString().ToUpper();
-                if (YorN == "Y") { CycleThuFolders(MovieDirPath()); }
-                else { Program.AppMainMenu();}
+                while (YorN != "Y") { CycleThuFolders(MovieDirPath());}
+                Console.Write("\n\n  Hit any key for Main Menu"); Console.ReadKey();
+                Program.AppMainMenu();
             }
         }
 
@@ -44,7 +45,7 @@ namespace MovieMetaData
             foreach (string name in folderNames)
             {
                 string newname = name;
-                Console.WriteLine("\nLooking up movie: {0}", name);
+                Console.WriteLine("\n  Looking up movie: {0}", name);
                 ResponseStrings OMDBResponse = OMDBGetResponse(name);
                 while (OMDBResponse.Response == "False")
                 {
@@ -136,8 +137,8 @@ namespace MovieMetaData
         {
             string userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string movieDir =null;
-            Console.WriteLine("\nFirst we need to find the main movie directory holding the movie folders.\n" +
-                                "\nAre the movie folder in the same folder as you placed this program? Y or N or <ENTER> to quit.\n");
+            Console.WriteLine("\n  We need to find your movie folder.\n" +
+                                "\n  Use the Mock Movie Folder?   Y or N or <ENTER> to quit.\n");
             string YN = Console.ReadKey().Key.ToString();
             switch (YN.ToUpper())
             {
@@ -145,9 +146,8 @@ namespace MovieMetaData
                     movieDir = Directory.GetCurrentDirectory();
                     break;
                 case "N":
-                    Console.WriteLine("\n\nOK.\n Please type the directory path to the folder holding the movie folders.\n" + 
-                        "\t(typically movies are placed in \n\t\t" +@"C:\Users\'your user name here'\Videos )" + 
-                        "\n If you are not sure, an easy method to find it is to use 'File Explorer' to locate the folder then\n" + " copy the address from 'address bar'.");
+                    Console.WriteLine("\n\nOK.\n  Please type the directory path to the folder holding the movie folders.\n" + 
+                        "\t(typically movies are placed in \n\t\t" +@"C:\Users\'your user name here'\Videos\n");
                     movieDir = @"c:\Users\napie\Videos";
                     movieDir = Console.ReadLine();
                     break;

@@ -83,10 +83,31 @@ namespace MovieMetaData
             
         }
 
+        //Check if database exists
+        public static bool CheckIfDBExists()
+        {
+            List<string> MovieTitles = new List<string>();
+            using (SQLiteConnection mDBconn = CreateConnection())
+            {
+                mDBconn.Open();
+                string sql = "SELECT Title from MovieTable";
+
+                using (SQLiteCommand mDBcmd = new SQLiteCommand(sql, mDBconn))
+                {using (SQLiteDataReader reader = mDBcmd.ExecuteReader())
+                    {foreach (string title in reader)
+                        { MovieTitles.Add(title);
+                        }
+                    }return true;
+                }
+            }
+        }
+
         //Shows a formatted table of movie titles w/ their IMDB http address to check
         public static void ViewMovieList()
         {
             Console.WriteLine("\n");
+
+            
             using (SQLiteConnection mDBconn = CreateConnection())
             {
                 mDBconn.Open();
