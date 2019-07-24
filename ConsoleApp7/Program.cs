@@ -63,13 +63,16 @@ namespace MovieMetaData
                     break;
                 case "C":
                     if (DBCommands.CheckIfDBExists() == true) { DBCommands.ViewMovieList(); }
-                    else { Console.WriteLine("\n  Need to populate database."); }
+                    else { Console.WriteLine("\n\n  Returned to Main Menu."); }
                     break;
                 case "D":
-                    DBCommands.SearchMovieTable();
+                    if (DBCommands.CheckIfDBExists() == true) { DBCommands.SearchMovieTable()  ; }
+                    else { Console.WriteLine("\n  before searching the database.\n\n  Returned to Main Menu."); }
                     break;
                 case "E":
-                    DBCommands.UpdateUserComment();
+                    if (DBCommands.CheckIfDBExists() == true) { DBCommands.UpdateUserComment(); }
+                    else { Console.WriteLine("\n  before updating comments.\n\n  Returned to Main Menu."); }
+                    
 
                     break;
                 case "X":

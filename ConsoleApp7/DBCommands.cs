@@ -20,6 +20,7 @@ namespace MovieMetaData
         // Creates table to match OMDB response
         public static object CreateNewMovieTable(SQLiteConnection mDBconn)
         {
+            Console.WriteLine("\nCreating MovieTable in database . . .");
             mDBconn.Open();
             SQLiteCommand mDBcmd = mDBconn.CreateCommand();
             mDBcmd.CommandText = @"DROP TABLE IF EXISTS MovieTable";
@@ -33,14 +34,14 @@ namespace MovieMetaData
 
         // Insert Proprties of object holing OMDB API resonse 
         // This dyanmially builds the SQL and uses Reflection and parameterization of object to avoid SQL Injection
-        public static void InsertOBDMData(SQLiteConnection mDBconn, ResponseStrings OMDBResponse)
+        public static void InsertOBDMData(SQLiteConnection mDBconn, ResponseStrings OMDBResponse2)
         {   
             SQLiteCommand mDBcmd = mDBconn.CreateCommand();
             string cmdText = @"INSERT INTO MovieTable  (";
             string keyText = "";
             string valText = "";
             //create dictionary
-            var OMDBDict = BuildDB.ObjectToDictionary(OMDBResponse);
+            var OMDBDict = BuildDB.ObjectToDictionary(OMDBResponse2);
             //set up for creating sql command text
             mDBcmd.CommandType = CommandType.Text;
             for (int index = 0; index < OMDBDict.Count-2; index++)
@@ -54,14 +55,14 @@ namespace MovieMetaData
                     keyText += itemKey + ", ";
                     valText += "@" + itemKey +  ", "; //"=" + itemKey +
                     mDBcmd.Parameters.Add("@" + itemKey, DbType.AnsiString).Value = itemVal;
-                     Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal);
+                     Console.WriteLine(" Added to Database: " + itemKey + " = " + itemVal);
                 }
                 else
                 {
                     keyText += itemKey + " )";
                     valText += "@" + itemKey + " )";  //"=" + itemKey + 
                     mDBcmd.Parameters.Add("@" + itemKey, DbType.AnsiString).Value = itemVal;
-                    Console.WriteLine("Added to Database: " + itemKey + " = " + itemVal); 
+                    Console.WriteLine(" Added to Database: " + itemKey + " = " + itemVal); 
                 }
             }
             cmdText += keyText + " VALUES (" + valText + ";";
@@ -78,7 +79,7 @@ namespace MovieMetaData
             finally
             {
                 mDBconn.Close();
-                Console.WriteLine("\n Movie data insertion complete: " + OMDBResponse.Title + "\n");
+                Console.WriteLine("\n Movie data insertion complete: " + OMDBResponse2.Title + "\n");
             }
             
         }
@@ -86,20 +87,21 @@ namespace MovieMetaData
         //Check if database exists
         public static bool CheckIfDBExists()
         {
-            List<string> MovieTitles = new List<string>();
+            List<string> TitleList = new List<string>();
             using (SQLiteConnection mDBconn = CreateConnection())
             {
                 mDBconn.Open();
-                string sql = "SELECT Title from MovieTable";
+                string sql = "SELECT Title FROM MovieTable";
 
                 using (SQLiteCommand mDBcmd = new SQLiteCommand(sql, mDBconn))
                 {using (SQLiteDataReader reader = mDBcmd.ExecuteReader())
-                    {foreach (string title in reader)
-                        { MovieTitles.Add(title);
-                        }
-                    }return true;
+                    while (reader.Read())
+                        { TitleList.Add(Convert.ToString(reader["Title"])); }
                 }
             }
+            if (TitleList.Count == 0) { Console.Write("\n  {0} Movie titles found.\n  MovieTable needs to be populated (Option B)", TitleList.Count); return false; }
+            else {
+                Console.Write("\n Movie Title Count = {0}", TitleList.Count); return true;}
         }
 
         //Shows a formatted table of movie titles w/ their IMDB http address to check
@@ -120,7 +122,7 @@ namespace MovieMetaData
                     {
                         while (reader.Read())
                         {
-                            Console.WriteLine(string.Format("{0,2}.{1,-25}{2}{3}", reader["Id"], reader["Title"], "Verify at: https://www.imdb.com/title/",reader["imdbID"]));
+                            Console.WriteLine(string.Format("{0,2}. {1,-25}{2}{3}", reader["Id"], reader["Title"], "Verify at: https://www.imdb.com/title/",reader["imdbID"]));
 
                         }
                     }
@@ -133,7 +135,7 @@ namespace MovieMetaData
         // This dyanmially builds the SQL and uses parameterization of object to avoid SQL Injection
         public static void SearchMovieTable() 
         {
-            Console.WriteLine("\n\tWhich movie from Database?  (enter \"L\" to see List)\n\t");
+            Console.WriteLine("\n\tProvide movie title to search in Database?  (enter \"L\" to see List)\n\t");
             string searchTitle = Console.ReadLine().Trim();
             char firstLetter = searchTitle.ToUpper()[0];
             if (firstLetter.Equals('L')) { ViewMovieList(); SearchMovieTable(); }  // Option to show Movie List

@@ -21,20 +21,50 @@ namespace MovieMetaData
             Console.WriteLine("\n\n  Database created.  You should now populate it.");
             return movieDir;
         }
-    
-        
-        public static void addMetaData()  // Add the movie to the database?
+
+        //Prompt user about .exe and location of movie folder to cycle though
+        public static string MovieDirPath()
         {
-            bool confirmed = false;
-            while (!confirmed)
+            string userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string movieDir = null;
+            Console.WriteLine("\n  We need to find your movie folder.\n" +
+                                "\n  Use the Mock Movie Folder?   Y or N or <ENTER> to quit.\n");
+            string YN = Console.ReadKey().Key.ToString();
+            switch (YN.ToUpper())
             {
-                Console.WriteLine("\n  Add Movie metadata to MovieTable? Y or N ");
-                string YorN = Console.ReadKey().Key.ToString().ToUpper();
-                while (YorN != "Y") { CycleThuFolders(MovieDirPath());}
-                Console.Write("\n\n  Hit any key for Main Menu"); Console.ReadKey();
-                Program.AppMainMenu();
+                case "Y":
+                    //movieDir = Directory.GetCurrentDirectory();
+                    movieDir = AppDomain.CurrentDomain.BaseDirectory;
+                    movieDir = movieDir.Replace("bin\\Debug", "MockFolderSet");
+                    break;
+                case "N":
+                    Console.WriteLine("\n\nOK.\n  Please type the directory path to the folder holding the movie folders.\n" +
+                        "\t(typically movies are placed in \n\t\t" + @"C:\Users\'your user name here'\Videos\n");
+                    //movieDir = @"c:\Users\napie\Videos";
+                    movieDir = Console.ReadLine();
+                    break;
+                case "X":
+                    movieDir = @"c:\Users\napie\Videos";
+                    break;
+                default:
+                    movieDir = userPath + @"\Videos";
+                    break;
             }
+            return movieDir;
         }
+
+        //public static void addMetaData()  // Add the movie to the database?
+        //{
+        //    bool confirmed = false;
+        //    while (!confirmed)
+        //    {
+        //        Console.WriteLine("\n  Add Movie metadata to MovieTable? Y or N ");
+        //        string YorN = Console.ReadKey().Key.ToString().ToUpper();
+        //        while (YorN != "Y") { CycleThuFolders(MovieDirPath());}
+        //        Console.Write("\n\n  Hit any key for Main Menu"); Console.ReadKey();
+        //        Program.AppMainMenu();
+        //    }
+        //}
 
         // One by one, use folder names to derive movie name then prompt user if correct movie 
         public static object CycleThuFolders(string movieDir)
@@ -46,7 +76,7 @@ namespace MovieMetaData
             {
                 string newname = name;
                 Console.WriteLine("\n  Looking up movie: {0}", name);
-                ResponseStrings OMDBResponse = OMDBGetResponse(name);
+                ResponseStrings OMDBResponse = OMDBWebRequest.GetOMDBWebRequest(name);
                 while (OMDBResponse.Response == "False")
                 {
                     //OMDBResponse.newname = name;
@@ -56,21 +86,21 @@ namespace MovieMetaData
             string mTitle = OMDBResponse.Title;
             string mYear = OMDBResponse.Year;
             string mActors = OMDBResponse.Actors;
-            EditTitleLoop.CorrectMovie(mTitle, mYear, mActors, name, OMDBResponse);
-            AddMovie2Database(OMDBResponse, movieDir);   
+            ResponseStrings OMDBResponse2 = EditTitleLoop.CorrectMovie(mTitle, mYear, mActors, name, OMDBResponse);
+            AddMovie2Database(OMDBResponse2, movieDir);   
             }
             return null;
         }
 
-        private static void AddMovie2Database(ResponseStrings OMDBResponse, string movieDir)
+        private static bool AddMovie2Database(ResponseStrings OMDBResponse2, string movieDir)
         {
             //bool confirmed = false;
             //while (!confirmed)
             {
-                Console.WriteLine("\n Add Movie metadata to MovieTable? Y or N ");
+                Console.WriteLine("\n  Add Movie metadata to MovieTable? Y or N ");
                 string YorN = Console.ReadKey().Key.ToString().ToUpper();
-                if (YorN == "Y") { DBCommands.InsertOBDMData( DBCommands.CreateConnection(),OMDBResponse); } // dynamically update table with omdResponse values
-                else { Program.AppMainMenu(); }
+                if (YorN == "Y") { DBCommands.InsertOBDMData( DBCommands.CreateConnection(),OMDBResponse2); return true; } // dynamically update table with omdResponse values
+                else { Console.WriteLine("\n|n  OK, on to next movie . . .\n"); return false; }
             }
         }
 
@@ -105,10 +135,10 @@ namespace MovieMetaData
         }
 
         // Hit the OMDB API with the movie title
-        public static ResponseStrings OMDBGetResponse(string name)
-        {
-            return OMDBWebRequest.GetOMDBWebRequest(name);
-        }
+        //public static ResponseStrings OMDBGetResponse(string name)
+        //{
+        //    return OMDBWebRequest.GetOMDBWebRequest(name);
+        //}
 
         //Create dictionary from object properties returned from API - will be used to 100% correctly populate MovieTable
         public static Dictionary<string, object> ObjectToDictionary(object obj)  
@@ -132,33 +162,6 @@ namespace MovieMetaData
             return OMDBdict;
         }
 
-        //Prompt user about .exe and location of movie folder to cycle though
-        public static string MovieDirPath()
-        {
-            string userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string movieDir =null;
-            Console.WriteLine("\n  We need to find your movie folder.\n" +
-                                "\n  Use the Mock Movie Folder?   Y or N or <ENTER> to quit.\n");
-            string YN = Console.ReadKey().Key.ToString();
-            switch (YN.ToUpper())
-            {
-                case "Y":
-                    movieDir = Directory.GetCurrentDirectory();
-                    break;
-                case "N":
-                    Console.WriteLine("\n\nOK.\n  Please type the directory path to the folder holding the movie folders.\n" + 
-                        "\t(typically movies are placed in \n\t\t" +@"C:\Users\'your user name here'\Videos\n");
-                    movieDir = @"c:\Users\napie\Videos";
-                    movieDir = Console.ReadLine();
-                    break;
-                case "X":
-                    movieDir = @"c:\Users\napie\Videos";
-                    break;
-                default:
-                    movieDir = userPath + @"\Videos";
-                    break;
-            }
-            return movieDir;
-        }
+
     }
 }
